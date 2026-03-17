@@ -4,7 +4,11 @@ import type { TargetFramework } from "../types";
 
 const frameworkOptions: TargetFramework[] = ["react-tailwind", "vue-tailwind", "html-css"];
 
-export function LibrarySidebar() {
+interface LibrarySidebarProps {
+  onOpenQuickPreview: () => void;
+}
+
+export function LibrarySidebar({ onOpenQuickPreview }: LibrarySidebarProps) {
   const components = useLibraryStore((state) => state.components);
   const selectedComponentId = useLibraryStore((state) => state.selectedComponentId);
   const selectComponent = useLibraryStore((state) => state.selectComponent);
@@ -24,9 +28,19 @@ export function LibrarySidebar() {
 
   return (
     <aside className="flex h-full flex-col gap-3 border-r border-slate-800 bg-slate-900 p-4">
-      <div>
-        <h2 className="text-lg font-semibold text-slate-100">Library</h2>
-        <p className="text-xs text-slate-400">Komponenten suchen, anlegen und verwalten.</p>
+      <div className="flex items-start justify-between gap-2">
+        <div>
+          <h2 className="text-lg font-semibold text-slate-100">Library</h2>
+          <p className="text-xs text-slate-400">Komponenten suchen, anlegen und verwalten.</p>
+        </div>
+        <button
+          type="button"
+          onClick={onOpenQuickPreview}
+          title="Code einfügen, Vorschau ansehen und als Komponente speichern"
+          className="shrink-0 rounded-md bg-blue-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-blue-500"
+        >
+          + Einfügen
+        </button>
       </div>
 
       <input
