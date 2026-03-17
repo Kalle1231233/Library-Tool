@@ -37,22 +37,15 @@ export const starterComponents = (): Component[] => [
     id: uid(),
     name: "Button",
     category: "inputs",
-    description: "CTA-Komponente für primäre und sekundäre Aktionen.",
+    description: "Vielseitige Button-Komponente mit fünf Varianten.",
     targetFramework: "react-tailwind",
     props: [
       {
         id: uid(),
         name: "variant",
         type: "enum",
-        enumValues: ["primary", "secondary"],
-        defaultValue: "primary",
-      },
-      {
-        id: uid(),
-        name: "size",
-        type: "enum",
-        enumValues: ["sm", "md", "lg"],
-        defaultValue: "md",
+        enumValues: ["default", "secondary", "outline", "ghost", "destructive"],
+        defaultValue: "default",
       },
       {
         id: uid(),
@@ -64,25 +57,84 @@ export const starterComponents = (): Component[] => [
     variants: [
       {
         id: uid(),
-        name: "Primary / md",
-        props: {
-          variant: "primary",
-          size: "md",
-          disabled: false,
-        },
+        name: "Default",
+        props: { variant: "default", disabled: false },
         code: {
-          jsx: `<button className="rounded-lg bg-blue-600 px-4 py-2 font-medium text-white disabled:opacity-50" disabled={disabled}>
-  Click me
+          jsx: `<button className="inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 disabled:pointer-events-none disabled:opacity-50 bg-slate-900 text-white hover:bg-slate-800" disabled={disabled}>
+  Button
 </button>`,
-          html: `<button class="rounded-lg bg-blue-600 px-4 py-2 font-medium text-white disabled:opacity-50">
-  Click me
+          html: `<button class="inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 disabled:pointer-events-none disabled:opacity-50 bg-slate-900 text-white hover:bg-slate-800">
+  Button
 </button>`,
           css: ``,
         },
-        notes: "Main CTA. Maximal einmal pro View.",
+        notes: "Primäre Aktion. Maximal einmal pro View verwenden.",
+      },
+      {
+        id: uid(),
+        name: "Secondary",
+        props: { variant: "secondary", disabled: false },
+        code: {
+          jsx: `<button className="inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 disabled:pointer-events-none disabled:opacity-50 bg-slate-100 text-slate-900 hover:bg-slate-200" disabled={disabled}>
+  Button
+</button>`,
+          html: `<button class="inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 disabled:pointer-events-none disabled:opacity-50 bg-slate-100 text-slate-900 hover:bg-slate-200">
+  Button
+</button>`,
+          css: ``,
+        },
+        notes: "Sekundäre Aktion neben einem Default-Button.",
+      },
+      {
+        id: uid(),
+        name: "Outline",
+        props: { variant: "outline", disabled: false },
+        code: {
+          jsx: `<button className="inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 disabled:pointer-events-none disabled:opacity-50 border border-slate-300 bg-white text-slate-900 hover:bg-slate-100" disabled={disabled}>
+  Button
+</button>`,
+          html: `<button class="inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 disabled:pointer-events-none disabled:opacity-50 border border-slate-300 bg-white text-slate-900 hover:bg-slate-100">
+  Button
+</button>`,
+          css: ``,
+        },
+        notes: "Umrandeter Button für weniger prominente Aktionen.",
+      },
+      {
+        id: uid(),
+        name: "Ghost",
+        props: { variant: "ghost", disabled: false },
+        code: {
+          jsx: `<button className="inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 disabled:pointer-events-none disabled:opacity-50 bg-transparent text-slate-900 hover:bg-slate-100" disabled={disabled}>
+  Button
+</button>`,
+          html: `<button class="inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 disabled:pointer-events-none disabled:opacity-50 bg-transparent text-slate-900 hover:bg-slate-100">
+  Button
+</button>`,
+          css: ``,
+        },
+        notes: "Minimal-Variante für Toolbar- oder Navigationsaktionen.",
+      },
+      {
+        id: uid(),
+        name: "Destructive",
+        props: { variant: "destructive", disabled: false },
+        code: {
+          jsx: `<button className="inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 disabled:pointer-events-none disabled:opacity-50 bg-red-600 text-white hover:bg-red-700" disabled={disabled}>
+  Button
+</button>`,
+          html: `<button class="inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 disabled:pointer-events-none disabled:opacity-50 bg-red-600 text-white hover:bg-red-700">
+  Button
+</button>`,
+          css: ``,
+        },
+        notes: "Für irreversible oder gefährliche Aktionen (z. B. Löschen).",
       },
     ],
-    guidelines: ["Nie mehr als einen Primary-CTA pro Screen einsetzen."],
+    guidelines: [
+      "Nie mehr als einen Default-Button pro Screen einsetzen.",
+      "Destructive-Variante nur nach expliziter Nutzerbestätigung auslösen.",
+    ],
   },
   {
     id: uid(),
