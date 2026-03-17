@@ -1,0 +1,45 @@
+{
+  "name": "component-library-manager",
+  "version": "0.1.0",
+  "description": "Component Library Manager (CLM) starter app",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kalle1231233/Library-Tool.git"
+  },
+  "keywords": [
+    "component-library",
+    "react",
+    "tailwind",
+    "ai"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Kalle1231233/Library-Tool/issues"
+  },
+  "homepage": "https://github.com/Kalle1231233/Library-Tool#readme",
+  "dependencies": {
+    "@monaco-editor/react": "^4.7.0",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "zustand": "^5.0.12"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.2.1",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.1",
+    "autoprefixer": "^10.4.27",
+    "postcss": "^8.5.8",
+    "tailwindcss": "^4.2.1",
+    "typescript": "^5.9.3",
+    "vite": "^8.0.0"
+  }
+}
