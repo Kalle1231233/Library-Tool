@@ -34,6 +34,14 @@ npm run build
 npm run preview
 ```
 
+## GitHub Pages
+
+Dieses Repo enthält einen Workflow unter `.github/workflows/deploy-pages.yml`, der die App mit Vite baut und `dist/` nach GitHub Pages deployed.
+
+Empfohlene Einstellung in GitHub:
+
+- `Settings → Pages → Source: GitHub Actions`
+
 ## Docker
 
 ```bash
