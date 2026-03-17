@@ -11,6 +11,7 @@ interface LibraryState {
   selectedVariantByComponentId: Record<string, string>;
   selectComponent: (componentId: string) => void;
   addComponent: (framework: TargetFramework) => void;
+  addRawComponent: (component: Component) => void;
   updateComponent: (componentId: string, updater: Updater<Component>) => void;
   removeComponent: (componentId: string) => void;
   addProp: (componentId: string) => void;
@@ -50,6 +51,15 @@ export const useLibraryStore = create<LibraryState>()(
             },
           };
         }),
+      addRawComponent: (component) =>
+        set((state) => ({
+          components: [...state.components, component],
+          selectedComponentId: component.id,
+          selectedVariantByComponentId: {
+            ...state.selectedVariantByComponentId,
+            ...(component.variants[0] ? { [component.id]: component.variants[0].id } : {}),
+          },
+        })),
       updateComponent: (componentId, updater) =>
         set((state) => ({
           components: updateComponentById(state.components, componentId, updater),
