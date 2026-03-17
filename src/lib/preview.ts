@@ -9,6 +9,58 @@ const applyTemplateVars = (input: string, values: Record<string, string | number
 
 const escapeForInlineScript = (value: string) => value.replaceAll("</script>", "<\\/script>");
 
+type ReactCodeMode =
+  | { kind: "snippet"; jsx: string }
+  | { kind: "component"; source: string; componentName: string | null };
+
+const parseReactCodeMode = (input: string): ReactCodeMode => {
+  const trimmed = input.trim();
+  if (!trimmed) {
+    return { kind: "snippet", jsx: "<div />" };
+  }
+
+  if (trimmed.startsWith("<") || trimmed.startsWith("(")) {
+    return { kind: "snippet", jsx: trimmed };
+  }
+
+  const exportDefaultFunctionMatch = trimmed.match(/export\s+default\s+function\s+([A-Za-z_$][\w$]*)/);
+  const exportDefaultIdentifierMatch = trimmed.match(/export\s+default\s+([A-Za-z_$][\w$]*)\s*;?/);
+
+  let componentName: string | null =
+    exportDefaultFunctionMatch?.[1] ?? exportDefaultIdentifierMatch?.[1] ?? null;
+
+  const transformed = trimmed
+    .replace(/^\s*import\s+.*$/gm, "")
+    .replace(/export\s+default\s+function\s+/g, "function ")
+    .replace(/^\s*export\s+default\s+([A-Za-z_$][\w$]*)\s*;?\s*$/gm, "")
+    .replace(/^\s*export\s+\{[^}]+\}\s*;?\s*$/gm, "")
+    .trim();
+
+  if (!componentName) {
+    componentName = transformed.match(/function\s+([A-Za-z_$][\w$]*)\s*\(/)?.[1] ?? null;
+  }
+
+  if (!componentName) {
+    componentName =
+      transformed.match(/const\s+([A-Za-z_$][\w$]*)\s*=\s*(?:\([^)]*\)\s*=>|function)/)?.[1] ?? null;
+  }
+
+  const looksLikeComponentSource =
+    /function\s+[A-Za-z_$][\w$]*\s*\(/.test(transformed) ||
+    /const\s+[A-Za-z_$][\w$]*\s*=\s*(?:\([^)]*\)\s*=>|function)/.test(transformed) ||
+    /return\s*\(/.test(transformed);
+
+  if (!looksLikeComponentSource) {
+    return { kind: "snippet", jsx: trimmed };
+  }
+
+  return {
+    kind: "component",
+    source: transformed,
+    componentName,
+  };
+};
+
 export const getInitialPropValues = (component: Component, variant?: Variant) => {
   const values: Record<string, string | number | boolean> = {};
   component.props.forEach((prop) => {
@@ -68,11 +120,19 @@ export const buildPreviewDocument = (
 </html>`;
   }
 
-  const jsx = escapeForInlineScript(variant.code.jsx ?? "<div />");
+  const parsedReactCode = parseReactCodeMode(variant.code.jsx ?? "<div />");
   const props = JSON.stringify(propValues);
   const variableDeclarations = Object.keys(propValues)
     .map((key) => `const ${key} = props["${key}"];`)
     .join("\n");
+  const componentSource =
+    parsedReactCode.kind === "component" ? escapeForInlineScript(parsedReactCode.source) : "";
+  const namedComponentResolver =
+    parsedReactCode.kind === "component" && parsedReactCode.componentName
+      ? `typeof ${parsedReactCode.componentName} !== "undefined" ? ${parsedReactCode.componentName} : null`
+      : "null";
+  const snippetCode =
+    parsedReactCode.kind === "snippet" ? escapeForInlineScript(parsedReactCode.jsx) : "<div />";
 
   return `<!doctype html>
 <html>
@@ -90,7 +150,15 @@ export const buildPreviewDocument = (
     <script type="text/babel">
       const props = ${props};
       ${variableDeclarations}
-      const element = (${jsx});
+      ${componentSource}
+      const resolvedComponent =
+        ${namedComponentResolver} ||
+        (typeof Button !== "undefined" ? Button : null) ||
+        (typeof Component !== "undefined" ? Component : null);
+      const element =
+        resolvedComponent !== null
+          ? React.createElement(resolvedComponent, props)
+          : (${snippetCode});
       ReactDOM.createRoot(document.getElementById("root")).render(element);
     </script>
   </body>

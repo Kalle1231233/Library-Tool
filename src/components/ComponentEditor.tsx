@@ -306,10 +306,16 @@ export function ComponentEditor({ component }: ComponentEditorProps) {
 
               <div className="space-y-2">
                 <p className="text-xs text-slate-300">Code (JSX/HTML/CSS)</p>
+                {component.targetFramework === "react-tailwind" ? (
+                  <p className="text-[11px] text-slate-400">
+                    Du kannst hier kompletten React-Code einfügen (inkl. <code>import</code> und{" "}
+                    <code>export default function</code>).
+                  </p>
+                ) : null}
                 <div className="h-48 overflow-hidden rounded-md border border-slate-700">
                   <Editor
                     theme="vs-dark"
-                    language="html"
+                    language={component.targetFramework === "react-tailwind" ? "javascript" : "html"}
                     value={selectedVariant.code.jsx ?? selectedVariant.code.html ?? ""}
                     onChange={(value) =>
                       updateVariant(component.id, selectedVariant.id, (item) => ({
